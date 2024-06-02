@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire de Saisie</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #d4af37;
+            text-align: center;
+        }
+
+        fieldset {
+            border: none;
+            margin-bottom: 20px;
+        }
+
+        legend {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #d4af37;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .custom-select {
+            position: relative;
+            width: 100%;
+        }
+
+        .custom-select select {
+            display: none;
+        }
+
+        .select-selected {
+            background-color: #d4af37;
+            color: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .select-selected:after {
+            content: "";
+            position: absolute;
+            top: 14px;
+            right: 10px;
+            border: 6px solid transparent;
+            border-color: #fff transparent transparent transparent;
+        }
+
+        .select-items {
+            position: absolute;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            z-index: 99;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .select-items div {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .select-items div:hover {
+            background-color: #ddd;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .buttons input[type="button"] {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            background-color: #d4af37;
+        }
+
+        .buttons input[type="button"]:hover {
+            background-color: #b7950b;
+        }
+
+        .separator {
+            border-bottom: 2px solid #d4af37;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #d4af37;
+            color: #fff;
+        }
+
+        .actions button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .edit-btn {
+            background-color: #007bff;
+        }
+
+        .edit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            max-width: 150px;
+        }
+
+        .copy-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .copy-button:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById('date_saisie').value = new Date().toISOString().split('T')[0];
+
+            const products = {
+                "Macarons": [
+                    { name: "Ella" },
+                    { name: "Inf Café Iapar" },
+                    { name: "Inf Caramel" },
+                    { name: "Inf Chocolat Paineiras" },
+                    { name: "Inf Framboise" },
+                    { name: "Inf fruit de la passion" },
+                    { name: "Inf Menthe Fraîche" },
+                    { name: "Inf Praliné Noisette" },
+                    { name: "Inf Praliné Pistache" },
+                    { name: "Inf Vanille de Madagascar" },
+                    { name: "Ispahan" },
+                    { name: "Jardin de Cassandre" },
+                    { name: "Jardin de Constance" },
+                    { name: "Jardin en Sicile" },
+                    { name: "Jardin Japonais" },
+                    { name: "Mogador" },
+                    { name: "Plaisir sucré" },
+                    { name: "Velouté Inf fraise" }
+                ],
+                "Pâtisseries": [
+                    { name: "2000 feuilles" },
+                    { name: "Tarte Vanille" },
+                    { name: "Tarte Ispahan" },
+                    { name: "Plaisir Sucré" },
+                    { name: "Tarte Faubourg Saint Honoré" },
+                    { name: "Tarte Céleste" },
+                    { name: "Jardin Japonais" },
+                    { name: "Jardin enchanté" },
+                    { name: "Hélena" },
+                    { name: "Constellation" },
+                    { name: "Bayadère" },
+                    { name: "Ultime" },
+                    { name: "Montebello" }
+                ]
+            };
+
+            document.getElementById('categorie').addEventListener('change', function() {
+                const category = this.value;
+                const productSelect = document.getElementById('produit');
+                productSelect.innerHTML = '';
+
+                if (products[category]) {
+                    products[category].forEach(product => {
+                        const option = document.createElement('div');
+                        option.className = 'thumbnail-option';
+                        option.innerHTML = `<span>${product.name}</span>`;
+                        option.addEventListener('click', function() {
+                            document.getElementById('selectedProduct').value = product.name;
+                            document.querySelector('.select-selected').innerHTML = this.innerHTML;
+                            closeAllSelect();
+                        });
+                        productSelect.appendChild(option);
+                    });
+
+                    productSelect.style.display = 'block';
+                } else {
+                    productSelect.style.display = 'none';
+                }
+            });
+
+            document.querySelectorAll('input[name="type_saisie"]').forEach(elem => {
+                elem.addEventListener('click', function() {
+                    if (document.getElementById('date_saisie').value &&
+                        document.getElementById('categorie').value &&
+                        document.getElementById('selectedProduct').value &&
+                        document.getElementById('quantite').value) {
+
+                        const date = document.getElementById('date_saisie').value;
+                        const category = document.getElementById('categorie').value;
+                        const product = document.getElementById('selectedProduct').value;
+                        const quantity = document.getElementById('quantite').value;
+                        const type = this.value;
+
+                        const table = document.getElementById('entriesTable').getElementsByTagName('tbody')[0];
+                        const newRow = table.insertRow();
+
+                        newRow.insertCell(0).textContent = date;
+                        newRow.insertCell(1).textContent = category;
+                        newRow.insertCell(2).textContent = product;
+                        newRow.insertCell(3).textContent = quantity;
+                        newRow.insertCell(4).textContent = type;
+
+                        const actionsCell = newRow.insertCell(5);
+                        actionsCell.className = 'actions';
+
+                        const editButton = document.createElement('button');
+                        editButton.textContent = 'Modifier';
+                        editButton.className = 'edit-btn';
+                        editButton.onclick = function() {
+                            if (newRow.contentEditable === "true") {
+                                newRow.contentEditable = "false";
+                                editButton.textContent = 'Modifier';
+                            } else {
+                                newRow.contentEditable = "true";
+                                editButton.textContent = 'Enregistrer';
+                            }
+                        };
+                        actionsCell.appendChild(editButton);
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Supprimer';
+                        deleteButton.className = 'delete-btn';
+                        deleteButton.onclick = function() {
+                            table.deleteRow(newRow.rowIndex - 1);
+                        };
+                        actionsCell.appendChild(deleteButton);
+
+                        document.getElementById('entryForm').reset();
+                        document.getElementById('date_saisie').value = new Date().toISOString().split('T')[0];
+                    } else {
+                        alert("Veuillez remplir tous les champs avant de valider.");
+                    }
+                });
+            });
+
+            document.getElementById('copyButton').addEventListener('click', function() {
+                const table = document.getElementById('entriesTable');
+                let rows = table.rows;
+                let text = '';
+
+                for (let i = 1; i < rows.length; i++) { // Start at 1 to skip header row
+                    let cells = rows[i].cells;
+                    for (let j = 0; j < cells.length - 1; j++) { // Skip actions cell
+                        text += cells[j].innerText + '\t'; // Use tab as separator
+                    }
+                    text += '\n'; // Newline after each row
+                }
+
+                navigator.clipboard.writeText(text).then(() => {
+                    alert("Les enregistrements ont été copiés dans le presse-papiers.");
+                }).catch(err => {
+                    console.error('Erreur lors de la copie dans le presse-papiers:', err);
+                });
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!event.target.matches('.select-selected')) {
+                    closeAllSelect();
+                }
+            });
+
+            function closeAllSelect() {
+                const items = document.querySelectorAll('.select-items');
+                items.forEach(item => {
+                    item.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <img src="https://www.pierreherme.com/media/logo/stores/1/logo-pierre-herme.svg" alt="Logo Pierre Hermé" class="logo">
+        <h1>Formulaire de Saisie</h1>
+        <form id="entryForm">
+            <fieldset>
+                <legend>Date</legend>
+                <label for="date_saisie">Date de Saisie :</label>
+                <input type="date" id="date_saisie" name="date_saisie" required><br><br>
+            </fieldset>
+
+            <fieldset>
+                <legend>Catégorie de Produit</legend>
+                <label for="categorie">Catégorie :</label>
+                <select id="categorie" name="categorie" required>
+                    <option value="">Sélectionnez une catégorie</option>
+                    <option value="Macarons">Macarons</option>
+                    <option value="Pâtisseries">Pâtisseries</option>
+                </select><br><br>
+
+                <label for="produit">Produit :</label>
+                <div class="custom-select">
+                    <div class="select-selected">Sélectionnez un produit</div>
+                    <div class="select-items" id="produit"></div>
+                    <input type="hidden" id="selectedProduct" name="produit" required>
+                </div><br><br>
+            </fieldset>
+
+            <fieldset>
+                <legend>Détails de la Saisie</legend>
+                <label for="quantite">Quantité :</label>
+                <input type="number" id="quantite" name="quantite" required><br><br>
+                
+                <div class="buttons">
+                    <input type="button" id="dlc" name="type_saisie" value="DLC">
+                    <input type="button" id="casse" name="type_saisie" value="Casse">
+                </div>
+            </fieldset>
+        </form>
+
+        <div class="separator"></div>
+
+        <table id="entriesTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Catégorie</th>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Type de Saisie</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <button id="copyButton" class="copy-button">Copier les enregistrements</button>
+    </div>
+</body>
+</html>
